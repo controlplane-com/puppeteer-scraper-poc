@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light" />
+    <meta name="theme-color" content="#ffffff" />
+    <title>Scrape — Control Plane POC</title>
+    <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="bg" aria-hidden="true"></div>
+
+    <main class="page">
+      <section class="hero">
+        <a
+          href="https://controlplane.com"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="logo-link"
+          aria-label="Visit controlplane.com"
+        >
+          <img src="./logo.svg" alt="Control Plane" class="logo-hero" />
+        </a>
+        <h1>Scrape a page on Control Plane</h1>
+        <p class="lede">
+          Submit a URL below. A fresh Puppeteer container spins up on
+          <a href="https://controlplane.com" target="_blank" rel="noopener noreferrer">Control Plane</a>,
+          scrapes the page, and hands the result back.
+        </p>
+      </section>
+
+      <section class="card" aria-labelledby="input-heading">
+        <div class="card-head">
+          <h2 id="input-heading">URL to scrape</h2>
+        </div>
+        <form id="scrape-form" class="form" autocomplete="off" novalidate>
+          <input
+            id="url"
+            name="url"
+            type="url"
+            inputmode="url"
+            spellcheck="false"
+            autocapitalize="off"
+            placeholder="https://example.com"
+            required
+            autofocus
+            aria-describedby="hint error"
+          />
+          <button id="submit" type="submit">Scrape</button>
+        </form>
+        <p id="hint" class="hint">
+          Scraping takes a few seconds — we're starting a container from scratch.
+        </p>
+        <p id="error" class="error" role="alert" hidden></p>
+      </section>
+
+      <section id="result" class="card result" aria-live="polite" hidden>
+        <div class="card-head">
+          <h2>Result</h2>
+          <span id="status" class="status status-running">
+            <span class="status-dot"></span>
+            <span id="status-text">Running</span>
+          </span>
+        </div>
+        <div id="result-body"></div>
+      </section>
+
+      <section id="history" class="card history" hidden>
+        <div class="card-head">
+          <h2>Recent scrapes</h2>
+          <button id="history-clear" class="btn-text" type="button">Clear</button>
+        </div>
+        <ul id="history-list" class="history-list"></ul>
+      </section>
+    </main>
+
+    <footer class="foot">
+      <span>POST /scrape → cpln workload cron run → processor</span>
+      <span class="foot-sep" aria-hidden="true">·</span>
+      <span>
+        Built on
+        <a href="https://controlplane.com" target="_blank" rel="noopener noreferrer">Control Plane</a>
+      </span>
+    </footer>
+
+    <script src="./app.js" defer></script>
+  </body>
+</html>

@@ -1,0 +1,15 @@
+# Lets webapp-identity read the GVC itself. `cpln workload cron run` starts by
+# fetching GVC metadata (to resolve location links, etc.) and fails without
+# view permission on the target GVC.
+kind: policy
+name: webapp-gvc-view
+tags:
+  app: puppeteer-scraper-poc
+targetKind: gvc
+targetLinks:
+  - //gvc/puppeteer-scraper-poc
+bindings:
+  - permissions:
+      - view
+    principalLinks:
+      - //gvc/puppeteer-scraper-poc/identity/webapp-identity

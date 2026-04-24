@@ -1,0 +1,29 @@
+# Lets webapp-identity create and run cron workloads in this GVC.
+#
+# `cpln workload cron run` provisions a cron workload on demand (and reuses
+# it across calls), so we can't target a specific named workload — we grant
+# the identity the three permissions it needs on workloads in this GVC:
+#   create                 — to provision the cron workload the first time
+#   edit                   — to update it on subsequent runs if params changed
+#   exec.runCronWorkload   — to trigger on-demand executions
+#   view                   — required by the CLI for reads
+kind: policy
+name: webapp-can-run-scraper-cron
+tags:
+  app: puppeteer-scraper-poc
+targetKind: workload
+targetQuery:
+  spec:
+    match: all
+    terms:
+      - op: "="
+        rel: gvc
+        value: puppeteer-scraper-poc
+bindings:
+  - permissions:
+      - create
+      - edit
+      - exec.runCronWorkload
+      - view
+    principalLinks:
+      - //gvc/puppeteer-scraper-poc/identity/webapp-identity

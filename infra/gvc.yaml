@@ -1,0 +1,10 @@
+# Dedicated GVC for the puppeteer-scraper-poc workloads.
+kind: gvc
+name: puppeteer-scraper-poc
+description: Dedicated GVC for the puppeteer-scraper-poc workloads.
+tags:
+  app: puppeteer-scraper-poc
+spec:
+  staticPlacement:
+    locationLinks:
+      - //location/aws-eu-central-1

@@ -1,0 +1,17 @@
+{
+  "name": "puppeteer-scraper-poc-scraper",
+  "version": "1.0.0",
+  "description": "Puppeteer cron container. Reads URL/JOB_ID/PROCESSOR_URL from env, scrapes, POSTs raw HTML to processor.",
+  "private": true,
+  "type": "module",
+  "main": "src/scrape.js",
+  "scripts": {
+    "start": "node src/scrape.js"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "dependencies": {
+    "puppeteer": "23.6.0"
+  }
+}

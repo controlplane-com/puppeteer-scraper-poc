@@ -1,0 +1,6 @@
+# Attached to the webapp workload. Scopes the auto-injected CPLN_TOKEN.
+kind: identity
+name: webapp-identity
+gvc: puppeteer-scraper-poc
+tags:
+  app: puppeteer-scraper-poc

@@ -1,0 +1,54 @@
+kind: workload
+name: webapp
+gvc: puppeteer-scraper-poc
+spec:
+  type: standard
+  identityLink: //identity/webapp-identity
+  containers:
+    - name: main
+      image: //image/puppeteer-scraper-poc-webapp:latest
+      cpu: 250m
+      memory: 512Mi
+      ports:
+        - number: 8080
+          protocol: http
+      env:
+        # CPLN_ORG, CPLN_GVC, and CPLN_TOKEN are auto-injected by Control Plane.
+        - { name: PORT, value: "8080" }
+        # `cpln workload cron run` provisions the cron workload from these specs.
+        - { name: SCRAPER_IMAGE, value: "//image/puppeteer-scraper-poc-scraper:latest" }
+        - { name: SCRAPER_CPU, value: "500m" }
+        - { name: SCRAPER_MEMORY, value: "1Gi" }
+        - { name: PROCESSOR_WORKLOAD, value: processor }
+        - { name: PROCESSOR_PORT, value: "8080" }
+        - { name: LOG_LEVEL, value: info }
+        # Stop the cpln CLI from pinging registry.npmjs.org for update checks —
+        # that call is blocked by our firewall and stalls every invocation.
+        - { name: NO_UPDATE_NOTIFIER, value: "1" }
+        - { name: CI, value: "true" }
+      readinessProbe:
+        httpGet: { path: /healthz, port: 8080 }
+        initialDelaySeconds: 2
+        periodSeconds: 10
+      livenessProbe:
+        httpGet: { path: /healthz, port: 8080 }
+        initialDelaySeconds: 15
+        periodSeconds: 30
+  defaultOptions:
+    # Raised from the 5s default — POST /scrape shells out to `cpln workload
+    # cron run`, which takes several seconds end-to-end even with --background.
+    timeoutSeconds: 60
+    autoscaling:
+      minScale: 1
+      maxScale: 2
+      metric: cpu
+      target: 70
+    capacityAI: false
+  firewallConfig:
+    external:
+      inboundAllowCIDR: [0.0.0.0/0]
+      # Wide-open outbound — the mesh intercept for api.cpln.io stalls when
+      # the CIDR list is empty (empty CIDR overrides hostname allow per docs).
+      outboundAllowCIDR: [0.0.0.0/0]
+    internal:
+      inboundAllowType: none

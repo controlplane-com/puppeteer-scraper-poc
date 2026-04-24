@@ -1,0 +1,40 @@
+kind: workload
+name: processor
+gvc: puppeteer-scraper-poc
+spec:
+  type: standard
+  containers:
+    - name: main
+      image: //image/puppeteer-scraper-poc-processor:latest
+      cpu: 250m
+      memory: 512Mi
+      ports:
+        - number: 8080
+          protocol: http
+      env:
+        - { name: PORT, value: "8080" }
+        - { name: MAX_HTML_BYTES, value: "5000000" }
+        - { name: MAX_LINKS, value: "20" }
+        - { name: LOG_LEVEL, value: info }
+      readinessProbe:
+        httpGet: { path: /healthz, port: 8080 }
+        initialDelaySeconds: 2
+        periodSeconds: 10
+      livenessProbe:
+        httpGet: { path: /healthz, port: 8080 }
+        initialDelaySeconds: 15
+        periodSeconds: 30
+  defaultOptions:
+    autoscaling:
+      minScale: 1
+      maxScale: 1
+      metric: cpu
+      target: 70
+    capacityAI: false
+  firewallConfig:
+    external:
+      # Internal-only — no public access.
+      inboundAllowCIDR: []
+      outboundAllowCIDR: []
+    internal:
+      inboundAllowType: same-gvc
